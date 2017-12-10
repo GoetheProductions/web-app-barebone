@@ -13,16 +13,17 @@ This derived from a Stephen Grider course about webpack. The plan is, that this 
 | --------------- | ------------------------------------------- | ----------- |
 | entry           | relative path(s) to application entry point | `""` / `[]` |
 | output          | config of completed bundle                  | `{}`        |
-| output.path     | absolute path for saved bundle              | `String`    |
-| output.filename | name of the output / bundled file           | `String`    |
+| output.path     | absolute path for saved bundle              | `""`        |
+| output.filename | name of the output / bundled file           | `""`        |
 
 #### OTHER CONFIG
 
-| key          | description                                     | datatype(s) |
-| ------------ | ----------------------------------------------- | ----------- |
-| module       | define configruation of bundeling process       | `{}`        |
-| module.rules | used to define `loader` rules                   | `[]`        |
-| plugins      | used to add plugin modules to webpack bundeling | `[]`        |
+| key               | description                                       | datatype(s) |
+| ----------------- | ------------------------------------------------- | ----------- |
+| module            | define configruation of bundeling process         | `{}`        |
+| module.rules      | used to define `loader` rules                     | `[]`        |
+| plugins           | used to add plugin modules to webpack bundeling   | `[]`        |
+| output.publicPath | defines a path that webpack should try to resolve | `{}`        |
 
 
 #### RULES AND LOADERS
@@ -34,10 +35,10 @@ In webpack, we use loaders in order to handle specific file types. `module.rules
 
 A rule is added to Webpack as an `Object` passed to the `Array` called `module.rules`
 
-| key  | description                                    | datatype(s) | example |
-| ---- | ---------------------------------------------- | ----------- | ------- |
-| use  | express the loaders needed                     | `''` / `[]` |         |
-| test | regex for what types of files should be tested | `regex`     | /\.js$/ |
+| key  | description                                    | datatype(s) | example   |
+| ---- | ---------------------------------------------- | ----------- | --------- |
+| use  | express the loaders needed                     | `""` / `[]` |           |
+| test | regex for what types of files should be tested | `regex`     | `/\.js$/` |
 
 
 Loaders are applied from right to left, when using multible loaders, so the last in the use array should always be the most important one.
@@ -45,10 +46,13 @@ Loaders are applied from right to left, when using multible loaders, so the last
 
 ###### CSS
 
-| key            | description                           |
-| -------------- | ------------------------------------- |
-| `css-loader`   | lets webpack know how to READ css     |
-| `style-loader` | Adds the styling to the HTML document |
+| key                    | description                                            |
+| ---------------------- | ------------------------------------------------------ |
+| `css-loader`           | lets webpack know how to READ css                      |
+| `style-loader`         | Adds the styling to the HTML document                  |
+| `url-loader`           | Used to determin how an image should be loaded         |
+| `image-webpack-loader` | compresses images in the bundle                        |
+| `file-loader`          | Used when images goes over the limit set in url loader |
 
 
 > Css that are imported directly into the application, is added to the header tag of the DOM
@@ -60,9 +64,9 @@ Plugins are outside libraries, that we can use to handle specific scenarioes, or
 
 ###### List of plugins
 
-| key                           | description                |
-| ----------------------------- | -------------------------- |
-| `extract-text-webpack-plugin` | Moves CSS top sepeate file |
+| key                           | description                | how to use |
+| ----------------------------- | -------------------------- | ---------- |
+| `extract-text-webpack-plugin` | Moves CSS top sepeate file | wrap the loader in this plugin, and add a new instance of the plugin to the array called plugin. It must have a filename as first argument. The filename is going to be the name of the bundeled CSS file. This CSS file should be included in the HTML file that loads the application
 
 
 
