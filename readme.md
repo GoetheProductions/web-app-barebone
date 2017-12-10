@@ -9,43 +9,82 @@ This derived from a Stephen Grider course about webpack. The plan is, that this 
 
 #### MINIMUM CONFIG
 
-| key  | description | datatype(s)  | required  |
-| ---- | ----------- | -----------  | --------  |
-| entry  | relative path(s) to application entry point (usually `./src/index.js`)  | `""` / `[]` | `true`  |
-| output  | config of completed bundle  | `{}`  | `true`  |
-| output.path  | absolute path to where the finished bundle should be saved to  | `String`  | `true`  |
-| output.filename  | name of the output / bundled file  | `String`  | `true`  |
+| key             | description                                 | datatype(s) |
+| --------------- | ------------------------------------------- | ----------- |
+| entry           | relative path(s) to application entry point | `""` / `[]` |
+| output          | config of completed bundle                  | `{}`        |
+| output.path     | absolute path for saved bundle              | `String`    |
+| output.filename | name of the output / bundled file           | `String`    |
 
 #### OTHER CONFIG
-| key  | description | datatype(s)  | required  |
-| ---- | ----------- | -----------  | --------  |
-| module  | used to define loader rules  | `{}`  | `false`  |
-| module.rules  | used to define loader rules  | `{}`  | `false`  |
+
+| key          | description                                     | datatype(s) |
+| ------------ | ----------------------------------------------- | ----------- |
+| module       | define configruation of bundeling process       | `{}`        |
+| module.rules | used to define `loader` rules                   | `[]`        |
+| plugins      | used to add plugin modules to webpack bundeling | `[]`        |
 
 
+#### RULES AND LOADERS
 
-#### GOOD TO KNOW
+In webpack, we use loaders in order to handle specific file types. `module.rules` is how we through webpack can specify how loaders should handle specific files.
 
-> It is possible to require everything, that is supported by node.js in Webpack
+
+##### Anatomy of a rule / loader
+
+A rule is added to Webpack as an `Object` passed to the `Array` called `module.rules`
+
+| key  | description                                    | datatype(s) | example |
+| ---- | ---------------------------------------------- | ----------- | ------- |
+| use  | express the loaders needed                     | `''` / `[]` |         |
+| test | regex for what types of files should be tested | `regex`     | /\.js$/ |
+
+
+Loaders are applied from right to left, when using multible loaders, so the last in the use array should always be the most important one.
+
+
+###### CSS
+
+| key            | description                           |
+| -------------- | ------------------------------------- |
+| `css-loader`   | lets webpack know how to READ css     |
+| `style-loader` | Adds the styling to the HTML document |
+
+
+> Css that are imported directly into the application, is added to the header tag of the DOM
+
+
+##### WEBPACK PLUGINS
+
+Plugins are outside libraries, that we can use to handle specific scenarioes, or things we want to have happening for our bundle. For example weather or not, our CSS shouls be loaded in the DOM or as an individual bundleled file.
+
+###### List of plugins
+
+| key                           | description                |
+| ----------------------------- | -------------------------- |
+| `extract-text-webpack-plugin` | Moves CSS top sepeate file |
+
 
 
 
 ## NODE & NPM
 
+It is possible to require everything, that is supported by node.js in Webpack
+
 
 #### DEPENDENCIES
 
-| key  | example |
-| ---- | ----------- |
-| path  | `path.resolve(__dirname, 'build')`  |
+| key  | example                            |
+| ---- | ---------------------------------- |
+| path | `path.resolve(__dirname, 'build')` |
 
 
 
 ##### NODE VARIABLES
 
-| key  | description |
-| ---- | ----------- |
-| __dirname  | gives us path to current root directory  |
+| key       | description                             |
+| --------- | --------------------------------------- |
+| __dirname | gives us path to current root directory |
 
 
 
@@ -56,9 +95,6 @@ there are some different ways to import and export
 `import var from 'dependency'` <-- import exported node_modules dependency
 `import var from './file'` <-- import exported file
 `import './file'` <-- import unexported file, that just needs to run
-
-
-
 
 
 
@@ -86,7 +122,6 @@ This is the module that transpiles the javascript we write into ES5
 #### BABEL-PRESET-ENV
 
 From what? What should the code transpile from? ES6 ES7 or what? this is the job of the preset-env. This is handled in the `.babelrc` file
-
 
 
 ### .babelrc
