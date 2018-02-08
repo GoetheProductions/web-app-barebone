@@ -1,20 +1,26 @@
-# INTRO
-
-This derived from a Stephen Grider course about webpack. The plan is, that this should be a basic from dev to production-ready application. This is version is 1.0.0 and has no view framework. Only a deployable application, bundeled with webpack, and transpiled with babel.
-
-# WHAT I HAVE LEARNED AND SHOULD REMEMBER
-
-## WEBPACK 2.2.0-rc.0
+# WEBPACK 2 CONFIG
 
 
 #### MINIMUM CONFIG
 
 | key             | description                                 | datatype(s) |
 | --------------- | ------------------------------------------- | ----------- |
-| entry           | relative path(s) to application entry point | `""` / `[]` |
+| entry           | relative path(s) to application entry point | `""` / `{}` |
 | output          | config of completed bundle                  | `{}`        |
 | output.path     | absolute path for saved bundle              | `""`        |
 | output.filename | name of the output / bundled file           | `""`        |
+
+
+#### hashing outputs <-- Does this make sense? No, and it might change in the furue.
+`filename: '[name].[chunkhash].js'`
+When hashing every build will result in a different bundle name. This will make sure that caching will only happen when there is no new build, so we dont end up with a cached version of some old code. 
+
+```
+new webpack.optimize.CommonsChunkPlugin({
+  names: ['vendor', 'manifest']
+}),
+```
+Also the webpack plugin should be written like the above, when using cache. We do a manifest to make sure that webpack does not look for an old bundle.
 
 #### OTHER CONFIG
 
@@ -66,7 +72,8 @@ Plugins are outside libraries, that we can use to handle specific scenarioes, or
 
 | key                           | description                | how to use |
 | ----------------------------- | -------------------------- | ---------- |
-| `extract-text-webpack-plugin` | Moves CSS top sepeate file | wrap the loader in this plugin, and add a new instance of the plugin to the array called plugin. It must have a filename as first argument. The filename is going to be the name of the bundeled CSS file. This CSS file should be included in the HTML file that loads the application
+| `extract-text-webpack-plugin` | Moves CSS top sepeate file | wrap the loader in this plugin, and add a new instance of the plugin to the array called plugin. It must have a filename as first argument. The filename is going to be the name of the bundeled CSS file. This CSS file should be included in the HTML file that loads the application |
+| `webpack.optimize.CommonsPlugin` | will remove duplicate requirements when venoring | `new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' })` <-- pass the name of the bundle that should include the dublicate code |
 
 
 
@@ -91,7 +98,6 @@ It is possible to require everything, that is supported by node.js in Webpack
 | __dirname | gives us path to current root directory |
 
 
-
 #### IMPORT & EXPORT RULES (ES6)
 
 there are some different ways to import and export
@@ -99,8 +105,6 @@ there are some different ways to import and export
 `import var from 'dependency'` <-- import exported node_modules dependency
 `import var from './file'` <-- import exported file
 `import './file'` <-- import unexported file, that just needs to run
-
-
 
 #### GLOBAL VS. LOCAL VERSIONS
 
@@ -131,3 +135,20 @@ From what? What should the code transpile from? ES6 ES7 or what? this is the job
 ### .babelrc
 
 Do we need it? Yes. Some say we don't, but we do. We do. This is the file, in which babel is configured. Say you run babel with webpack (babel-loader), on every instance of a javascript file that is compiled through webpack, we tell it, to use the .babelrc configuration.
+
+
+
+
+###### system import
+It is not very effective to have everything in one bundle. Especially if we have some code, that is only needed one specific place. Codesplitting needs to be done cleverly, and if done right it will optimize production enviroment. 
+
+`System.import` is an es6 module feature, that allows us so require something on the go, or when we need it. It's really simple, but it requires an overview of the general structure.
+
+
+###### vendoring
+vendoring in webpack seperates dependencies and our written code. We can also vondor our dependencies, so that they dont have to be downloaded, the second time someone visits our application.
+
+
+##### Drawbacks
+One single drawback of using codesplitting with es6 and webpack, is that it is not compatible with webpack-hot-module reloading. This is fine, because code splitting is not needed in the development enviroment.
+
